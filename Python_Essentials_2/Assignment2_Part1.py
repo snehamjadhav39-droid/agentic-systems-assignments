@@ -9,7 +9,7 @@
 class StudentMarks:
     def last_three_average(self, Marks):
         try:
-            if len(self.Marks) < 3:
+            if len(Marks) < 3:
                 raise ValueError("List has less than 3 marks. Cannot calculate average.")
 
             input_list=Marks[-3:]
