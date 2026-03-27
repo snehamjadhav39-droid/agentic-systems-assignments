@@ -20,12 +20,12 @@ class User(BaseModel):
     email: EmailStr
     age: int = Field(ge=18)
     address: Address
-    is_premium: Optional[bool] = False
+    #is_premium: Optional[bool] = False
 
 # Input Data
 data = {
     "user_id": "101",
-    "name": "Deepak",
+    "name": "Deepak k",
     "email": "deepak@gmail.com",
     "age": "25",
     "address": {
