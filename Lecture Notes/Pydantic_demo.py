@@ -47,6 +47,13 @@
 from pydantic import BaseModel, Field, EmailStr, AnyUrl, field_validator, model_validator, computed_field
 from typing import Dict
 
+#Nested Model
+class Address(BaseModel):
+    house_number : str
+    area : str
+    city : str
+    pincode : int
+
 class Student(BaseModel):   #Inherit the Pydantic BaseModel Class
     name: str = Field(max_length = 5, description = 'provide user name')
     age: int = Field(gt=0, le=100)
@@ -55,6 +62,7 @@ class Student(BaseModel):   #Inherit the Pydantic BaseModel Class
     college: str
     marks: float = Field(default=10.0, ge=0)  #marks set to 10.0 in case input not defined
     emergency_contact_number: Dict[str,int]       #import a dictionary: key string, value int
+    address: Address    #Nested Model, defined address of the type address class which can be called from the student object
 
     #this field validator is used to validate if email belongs to @masai.com. It should be triggered when object creation
     @field_validator('email') #field validator only for email, one variable at a time
@@ -106,14 +114,25 @@ class Student(BaseModel):   #Inherit the Pydantic BaseModel Class
         
         return model;
 
+
+address_info = {'house_number' : '23', 'area': 'Nankeville', 'city': 'woking','pincode' : 123456}
+address_obj = Address(**address_info)
+print(address_obj)
+
+
 #student_info is dictionary, create Student object using this dictionary
 #order does not matter in dictionary
 #it will ignore if there is any extra field in the input
-student_info = {'name': 'Sneha', 'age' : 20, 'email' : 'abc@gmail.com', 'website' : 'https://www.google.com', 'college' : 'OXford', 'marks' : 23, 'emergency_contact_number': {'mothers': 123456789}}
+student_info = {'name': 'Sneha', 'age' : 20, 'email' : 'abc@gmail.com', 'website' : 'https://www.google.com', 'college' : 'OXford', 'marks' : 23, 'emergency_contact_number': {'mothers': 123456789}, 'address' : address_obj} #passed the address object
 
-#** -> unpacking, converting any data structure like dictionary, map, list into an object
+#** -> unpacking, converting any data structure like dictionary, map, list into an object/student model
+
 student = Student(**student_info)
 print(student)
+
+#convert student object into dictionary :: model_dump converts the model into dictionary
+student_dict = student.model_dump(exclude = ['address', 'marks'])   #exclude property, excludes the parameters
+print(student_dict)
 
 
 ##serialization - deserialization
