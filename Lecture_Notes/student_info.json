@@ -1,0 +1,23 @@
+{
+    "ST001": {
+        "name" : "Milind",
+        "city" : "Pune",
+        "age" : 23,
+        "problems_solved" : 81
+    },
+
+    "ST002": {
+        "name" : "Sneha",
+        "city" : "Woking",
+        "age" : 34,
+        "problems_solved" : 54
+    },
+
+    "ST003": {
+        "name" : "Milu",
+        "city" : "Delhi",
+        "age" : 54,
+        "problems_solved" : 89
+    }
+
+}
