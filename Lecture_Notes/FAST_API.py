@@ -41,7 +41,7 @@ def say_hello():
 def say_bye():
     return "Bye Bye Everyone!!"
 
-#command to start the server : uvicorn FAST_API.py:app
+#command to start the server to run a fast API : uvicorn FAST_API.py:app
 # for any changes : uvicorn server has to be stopped and started again for the changes to take effect. command to stop : Ctrl+C
 # but to reload the changes automatically the command can be used : uvicorn FAST_API:app --reload
 
@@ -66,11 +66,13 @@ def get_all_students():
 # Get the data for a particular student ID
 # This can be done by two ways : PATH Parameters and QUERY uery Parameters
 
-# PATH PARAMETERS - /students/ST001
+# PATH PARAMETERS - /students/{student_id, eg ST001}
 @app.get("/students/{student_id}")   #PATH Paratmeters passed via Curly Braces
 def get_student_with_id(student_id: str = Path(..., description = "Id of the Student")):      #Path function: 3 dots mean this parameter is mandatory. If you dont pass student_id it will throw an error :: Import Path
     data = load_students_data()
 
+
+    #HTTP 200 OK is the default success status code for GET Requests
     if student_id not in data:
         return HTTPException(status_code=404, detail = "Student not found")     # Import HttpException
 
