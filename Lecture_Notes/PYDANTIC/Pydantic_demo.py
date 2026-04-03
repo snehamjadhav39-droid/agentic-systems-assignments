@@ -13,7 +13,7 @@
 
 # Pydantic - Data Validation  - Install Pydantic - pip install pydantic
 # Craete BaseModel or Create an Ideal Model Class using Pydantic
-
+# By default all input parameters are mandatory when using Pydantic
 #Type Validation : Validating the data type of the input parameters
 
 # from pydantic import BaseModel
@@ -82,7 +82,7 @@ class Student(BaseModel):   #Inherit the Pydantic BaseModel Class
 
 #Mode parameter regulates the data type conversion as specified, before or after the value being passed to the function.
 #eg if age = "20" and mode = after, means mode validation will happen after the string 20 is converted to int 20
-#if age = "20" and mode = before, means mode validation will happen before the sting 20 is converted to int 20 and will raise an exception
+#if age = "20" and mode = before, means mode validation will happen before the sting 20 is converted to int 20 and in this case will raise an exception
     @field_validator('age', mode = 'after') #default for mode is after
     @classmethod
     def validate_age(cls, value):

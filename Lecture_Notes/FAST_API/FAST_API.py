@@ -10,7 +10,7 @@
 # Just one Language is not easy for entire framework, hence we have the concept of FRAMEWORKS
 # Python Frameworks: FAST APIs, DJANGO
 
-# FAST API : It is a modern python based web framework to build production ready applications. It is faster to build and use.
+# FAST API : It is a modern python based web framework to build production ready applications. It is faster to build and use Web APIs/ REST APIs
 # ADVANTAGES of FAST API :
 #   1. APIs built using APIs are faster
 #   2. API Documentation is is automatic via SWAGGER UI - uses thge SWAGGER Framework
@@ -22,16 +22,18 @@
 
 # HTTPS Methods/Conventions : GET -> Read, PUT -> Update(PATCH for partial object update, and PUT is for complete object or replace the whole object) , POST -> Create, DELETE -> Delete (in analogy with the CRUD)
 
-
+#API Design process : Validate the INPUTS -> PROCESS the inputs -> RETURN the output
 
 #INSTALL pip fastapi, uvicorn
 
-from fastapi import FastAPI, HTTPException, Path, Query
+from fastapi import FastAPI, HTTPException, Path, Query, Depends
 import json
+from Lecture_Notes.FAST_API.common import db_operation
 
 app = FastAPI()     #app is object of thge type FastAPI
 
 #localhost:8000/hello
+# /hello is DECORATOR/WRAPPER of say_hello()
 @app.get("/hello")   #/ denotes the default api call when the website is called. ACnnot have more than one default for multiple APIs
 def say_hello():
     return "Hello World!!"
@@ -41,7 +43,7 @@ def say_hello():
 def say_bye():
     return "Bye Bye Everyone!!"
 
-#command to start the server to run a fast API : uvicorn FAST_API.py:app
+#command to start the server to run a fast API : uvicorn FAST_API:app
 # for any changes : uvicorn server has to be stopped and started again for the changes to take effect. command to stop : Ctrl+C
 # but to reload the changes automatically the command can be used : uvicorn FAST_API:app --reload
 
@@ -84,6 +86,7 @@ def get_student_with_id(student_id: str = Path(..., description = "Id of the Stu
 # Https Status Code : 200 : Valid Response, 404: Not found.
 
 #QUERY PARAMETRS - Import Query
+# /students?student_id = ST001 :: key: value pair
 # denoted by ? in the url while calling a query parameter
 @app.get("/students_query")   #PATH Paratmeters passed via Curly Braces
 def get_student_with_id(student_id: str = Query(..., description = "Id of the Student")):      #Path function: 3 dots mean this parameter is mandatory. If you dont pass student_id it will throw an error :: Import Path
@@ -93,3 +96,51 @@ def get_student_with_id(student_id: str = Query(..., description = "Id of the St
         return HTTPException(status_code=404, detail = "Student not found")     # Import HttpException
 
     return data[student_id]
+
+
+# Sort the students by their age or problems solved
+# Client should be able to sort the values in ascending or descending order
+# eg: /students?sort_by=age&sort_order=asc
+@app.get("/sort")
+def get_students_in_sorted_order(sort_by: str = Query(..., description = "Sort by their age or problem solved"), sort_order : str = Query('asc', description = "Sorting by asc or desc")):   # In Query function for sort_order, asc is not a mandatory paramater
+    valid_sort_by_fields = ['age','problems_solved']
+
+    if sort_by not in valid_sort_by_fields:
+        raise HTTPException (status_code = 400 , detail = "Can only sort age or problem solved")
+
+    if sort_order not in ['asc', 'desc']:
+        raise HTTPException (status_code = 400 , detail = "Can only sort age or problem solved")
+
+    students_data = load_students_data()
+
+
+    order = True
+    if sort_order == 'desc':
+        order = False
+
+    # reverse = TRUE -> ASC Order
+    # reverse = FASLE -> DESC Order
+    sorted_students_data = sorted(students_data.values(), key= lambda k: k.get('age',0), reverse=order)
+
+    return sorted_students_data
+
+# If we write common functionality in seperate file import the file and function of that file
+# DEPENDENCY INJECTION : In FAST API, we need not call the dependies manually, it will do it automatically using the Depends function
+# import Depends
+
+@app.get("/api")
+def sample_api(x = Depends(db_operation)): #sample_api need input x returned by db_operations()
+    return x
+
+
+# SQLAlchemy - ORM (Object Relation Mapping) Library in Python to deal with DB
+# Objects : Models/Class
+# Relation : SQL/Tables
+# RDBMS/SQL databases store data in the form of tables, tables are related
+# FAST API - Build APIs + SQLAlchemy - to connect databases
+# eg. HibernaTE IS orm LIBRARY IN java
+
+# SQLAlchemy can be used in two ways : core method and ORM
+# core needs manual intervention and ORM is more automatic
+
+# How to create database : pip intall sqlalchemy
