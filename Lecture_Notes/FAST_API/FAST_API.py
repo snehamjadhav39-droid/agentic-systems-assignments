@@ -30,7 +30,7 @@
 
 from fastapi import FastAPI, HTTPException, Path, Query, Depends
 import json
-from Lecture_Notes.FAST_API.common import db_operation
+from common import db_operation
 
 app = FastAPI()     #app is object of thge type FastAPI
 
